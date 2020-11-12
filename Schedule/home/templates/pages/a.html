@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{%block title%}GA Algorithm{% endblock %}</title>
+    {% block link %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% endblock %}
+    
+</head>
+<body>
+    <style>
+        .thu {
+            text-align: center;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $(".addNumber").click(function () {
+                $(".info-gen").text('Generation : '  + $(".gen").val());
+                $(".info-pop").text('Number of population : ' + $(".numPopulation").val());
+                $(".info-sub").text('Subject/Teacher in day : ' + $(".subPerTeacher").val());
+                $(".info-mutation").text('Mutation : ' + $(".input_mutation").val());
+            });
+            $(".addClass").click(function(){
+                if($(".class-input").val().trim()==""){
+                    $(".class-input").val("")
+                    return
+                }
+                let all_class = ($(".class-input").val()).split(",")
+                $(".class-input").val("")
+                let info_class = "Classroom :  "
+                for(let i = 0;i<all_class.length;i++){
+                    var a = "<div type='button' class='btn btn-outline-primary classname col-xl mr-1' style='position: relative;'>"+ all_class[i]+"<span class='badge deleteClass' style='position: absolute;top: -8px;right: -10px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></span></div>"
+                    $('.classinfo').append(a)
+                }                
+                $(".deleteClass").click(function () {
+                    $(this).parent().remove()
+                })
+
+            })
+            $(".addTeacher").click(function(){
+                let subject = $(".Subject-input").val()
+                let teacher = $(".teacher-input").val()
+                if(subject.trim() == "" || teacher.trim() == ""){
+                    $(".Subject-input").val("")
+                    $(".teacher-input").val("")
+                    return
+                }
+                let a = "<div class='subject-div' style='position: relative;'><span class='teachername' style='font-weight: bold'>" + teacher + "</span><span> : </span><span class='subjectname'>" + subject + "</span><div class='deleteteacher' style='position: absolute;top: -4px;right: -5px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></div></div>"
+                $(".teacherdiv").append(a);
+                $(".Subject-input").val("")
+                $(".teacher-input").val("")
+                $(".deleteteacher").click(function(){
+                    $(this).parent().remove()
+                })
+            })
+            $(".addSub").click(function(){
+                let subject = $(".sub-input").val()
+                let numsub = $(".num-sub-input").val()
+                if (subject.trim() == "" || numsub.trim() == "") {
+                    $(".sub-input").val("")
+                    $(".num-sub-input").val("")
+                    return
+                }
+                $(".sub-input").val("")
+                $(".num-sub-input").val("")
+                let a = "<div style='position: relative;' class='subject-div'><span class='subjectName' style='font-weight: bold'>" + subject + "</span><span> : </span><span class='subjectNum'>" + numsub + "</span><div class='deletesubject' style='position: absolute;top: -4px;right: -5px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></div></div>"
+                $(".subjectdiv").append(a)
+                $(".deletesubject").click(function () {
+                    $(this).parent().remove()
+                })
+            })
+            $(".addDate").click(function(){
+                let date = $(".date-input").val()
+                if (date.trim() == "" ) {
+                    $(".date-input").val("")
+                    return
+                }
+                $(".date-input").val("")
+                $(".date-label").text("Date : "+date)
+
+            })
+            $(".form").submit(function(e){
+                e.preventDefault()
+                let gen = $(".info-gen").text().split(" ")[2]
+                let population = $(".info-pop").text().split(" ")[4]
+                let subPerDay = $(".info-sub").text().split(" ")[4]
+                let mutation = $(".info-mutation").text().split(" ")[2]
+                let date = $(".date-label").text().split(":")[1].trim()
+                let classname = [];
+                $('.classname').each(function (index, obj) {
+                    classname.push($(this).text());
+                });
+                classname = [...new Set(classname)]
+                classname = classname.join()
+                
+                let subjectname;
+                let teachername = {};
+                $('.teachername').each(function (index, obj) {
+                    subjectname = $(this).next().next().text()
+                    let name = $(this).text()
+                    teachername[name] = subjectname
+                    
+                });
+                teachername = JSON.stringify(teachername)
+
+                let subname;
+                let sub = {}
+                $('.subjectName').each(function (index, obj) {
+                    subname = $(this).next().next().text()
+                    let name = $(this).text()
+                    sub[name] = subname
+                    
+                });
+                sub = JSON.stringify(sub)
+
+                console.log(gen, population, subPerDay, mutation, classname, teachername,sub)
+                $.post("",
+                {
+                    'date':date,
+                    'gen': gen,
+                    'population':population,
+                    'subPerDay':subPerDay,
+                    'mutation':mutation,
+                    'classname':classname,
+                    'teachername':teachername,
+                    'sub':sub,
+                    'csrfmiddlewaretoken': $('.form input[type=hidden]').val(),
+                },
+                function(data, status){
+                    let temp1 = data.split("/")
+                    for(let i=0;i<temp1.length;i++){
+                        temp1[i] = temp1[i].split(",")
+                    }
+                    $(".shedule-detail").children().remove()
+                    let a = temp1
+                    let Phong = new Set(a.map(_ => _[1]))
+                    Phong = Object([...Phong])
+                    let temp = {}
+                    for (i of Phong) {
+                        temp[i] = a.filter(e => e[1] === i)
+                    }
+                    Phong = temp
+                    for (classroom in Phong) {
+                        let Ca = Phong[classroom]
+                        let ca1 = Ca.filter(e => e[2] === "7-9")
+                        let ca2 = Ca.filter(e => e[2] === "9-11")
+                        let ca3 = Ca.filter(e => e[2] === "13-15")
+                        let ca4 = Ca.filter(e => e[2] === "15-17")
+                        let count = 1
+                        let schedule = `
+                <table class="table table-striped `+ classroom + `">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="text-align: center;" class="room">`+ classroom + `</th>
+                            <th scope="col" style="text-align: center;">Thứ 2</th>
+                            <th scope="col" style="text-align: center;">Thứ 3</th>
+                            <th scope="col" style="text-align: center;">Thứ 4</th>
+                            <th scope="col" style="text-align: center;">Thứ 5</th>
+                            <th scope="col" style="text-align: center;">Thứ 6</th>
+                            <th scope="col" style="text-align: center;">Thứ 7</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="ca1">
+                            <th scope="row">Ca 1</th>
+                            <td class="thu thu2">
+
+                            </td>
+                            <td class="thu thu3">
+
+                            </td>
+
+                            <td class="thu thu4">
+
+                            </td>
+                            <td class="thu thu5">
+
+                            </td>
+                            <td class="thu thu6">
+
+                            </td>
+                            <td class="thu thu7">
+
+                            </td>
+                        </tr>
+                        <tr class="ca2">
+                            <th scope="row">Ca 2</th>
+                            <td class="thu thu2">
+
+                            </td>
+                            <td class="thu thu3">
+
+                            </td>
+
+                            <td class="thu thu4">
+
+                            </td>
+                            <td class="thu thu5">
+
+                            </td>
+                            <td class="thu thu6">
+
+                            </td>
+                            <td class="thu thu7">
+
+                            </td>
+                        </tr>
+                        <tr class="ca3">
+                            <th scope="row">Ca3</th>
+                            <td class="thu thu2">
+
+                            </td>
+                            <td class="thu thu3">
+
+                            </td>
+
+                            <td class="thu thu4">
+
+                            </td>
+                            <td class="thu thu5">
+
+                            </td>
+                            <td class="thu thu6">
+
+                            </td>
+                            <td class="thu thu7">
+
+                            </td>
+                        </tr>
+                        <tr class="ca4">
+                            <th>Ca4</th>
+                            <td class="thu thu2">
+
+                            </td>
+                            <td class="thu thu3">
+
+                            </td>
+
+                            <td class="thu thu4">
+
+                            </td>
+                            <td class="thu thu5">
+
+                            </td>
+                            <td class="thu thu6">
+
+                            </td>
+                            <td class="thu thu7">
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                    <div class="mt-3 mb-3"></div>
+                </div>
+
+                `
+                        $(".shedule-detail").append(schedule)
+
+                        for (i of [ca1, ca2, ca3, ca4]) {
+
+                            for (j of i) {
+
+                                date = "thu" + parseInt(j[4][3])
+                                let parent = $("." + classroom.trim() + " ." + "ca" + count + " ." + date)
+                                parent.append(` <div style='max-width: 10rem; min-width: 7rem' class='btn btn-outline-primary'>
+                    <h5 h5 class='card-title'>` + j[0] + `</h5>
+                    <p class='card-text'>` + j[3] + `</p>
+                </div>`)
+                            }
+                            count++
+                        }
+                    }
+
+                });
+            })
+        });
+    </script>
+
+
+    <div class="container-fluid d-flex flex-column justify-content-center text-light" style="height: 200px; background-color: #3498db !important;text-align: center;">
+        <h1>A Genetic Algorithm for Class Scheduling</h1>
+        <p>Nhập môn trí tuệ nhân tạo</p>
+    </div>
+    <div class="container body" style="padding-top: 100px;">
+        <div class="row">
+            <div class="col-sm">
+                <div class="row">
+                    <div class="col-xl-6 d-flex flex-column justify-content-center ">
+                        <p class="label" style="margin-bottom: 5px !important;">Generation</p>
+                        <input type="number" placeholder="Generation" class="form-control form-control-md gen">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-center">
+                        <p class="label" style="margin-bottom: 5px !important;">Number of population</p>
+                        <input type="number" placeholder="Number of population" class="form-control form-control-md numPopulation">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-center mt-3">
+                        <p class="label" style="margin-bottom: 5px !important;">Subject/Teacher in day</p>
+                        <input type="number" placeholder="Subject/Teacher in day" class="form-control form-control-md subPerTeacher">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-center mt-3">
+                        <p class="label" style="margin-bottom: 5px !important;">Mutation: </p>
+                        <input type="number" placeholder="Mutation" class="form-control form-control-md input_mutation">
+                    </div>
+                    <div class="col-xl-12 d-flex flex-column justify-content-center mt-3">
+                        <button type="button" class="btn btn-outline-primary addNumber">Add</button>
+                    </div>
+                    
+                </div>
+                <hr class="mt-4 mb-4">
+                <div class="row">
+                    <div class="col-xl-6 d-flex flex-column justify-content-center classroom">
+                        <p class="label" style="margin-bottom: 5px !important;">Classroom</p>
+                        <input type="text" placeholder="Classroom" class="form-control form-control-md class-input">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-end ">
+                        <button type="button" class="btn btn-outline-primary addClass">Add class</button>
+                    </div>
+                </div>
+                <hr class="mt-4 mb-4">
+                <div class="row">
+                    <div class="col-xl-6 d-flex flex-column justify-content-center date">
+                        <p class="label" style="margin-bottom: 5px !important;">Date in week</p>
+                        <input type="text" placeholder="Date" class="form-control form-control-md date-input">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-end ">
+                        <button type="button" class="btn btn-outline-primary addDate">Add date</button>
+                    </div>
+                </div>
+                <hr class="mt-4 mb-4">
+                <div class="row">
+                    <div class="col-xl-6 d-flex flex-column justify-content-center teacher">
+                        <p class="label" style="margin-bottom: 5px !important;">Teacher</p>
+                        <input type="text" placeholder="Teacher's Name" class="form-control form-control-md teacher-input">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-center Subject">
+                        <p class="label" style="margin-bottom: 5px !important;">Subject</p>
+                        <input type="text" placeholder="Subject" class="form-control form-control-md Subject-input">
+                    </div>
+                    <div class="col-xl-12 d-flex flex-column justify-content-end mt-3">
+                        <button type="button" class="btn btn-outline-primary addTeacher">Add Teacher</button>
+                    </div>
+                </div>
+                <hr class="mt-4 mb-4">
+                <div class="row">
+                    <div class="col-xl-6 d-flex flex-column justify-content-center sub">
+                        <p class="label" style="margin-bottom: 5px !important;">Subject</p>
+                        <input type="text" placeholder="Subject" class="form-control form-control-md sub-input">
+                    </div>
+                    <div class="col-xl-6 d-flex flex-column justify-content-center sub">
+                        <p class="label" style="margin-bottom: 5px !important;">Number Class</p>
+                        <input type="text" placeholder="Number Class" class="form-control form-control-md num-sub-input">
+                    </div>
+                    <div class="col-xl-12 d-flex flex-column justify-content-end mt-3">
+                        <button type="button" class="btn btn-outline-primary addSub">Add Subject</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <form class="form">
+                    {% csrf_token %}  
+                    <div class="row">
+                        <div class="col-xl-6 d-flex flex-column justify-content-center ">
+                            <h5 class="label info-gen">Generation : </h5>
+                            
+                        </div>
+                        <div class="col-xl-6 d-flex flex-column ">
+                            <h5  class="label info-pop">Number of population : </h5>
+                        </div>
+                        <div class="col-xl-6 d-flex flex-column justify-content-center mt-3">
+                            <h5  class="label info-sub">Subject/Teacher in day : </h5>
+                        </div>
+                        <div class="col-xl-6 d-flex flex-column justify-content-center mt-3">
+                            <h5  class="label info-mutation">Mutation : </h5>
+                        </div>
+                    </div>
+                    <div class="mt-3 mb-2"></div>
+                    <div class="row">
+                        <div class="col-xl-12 d-flex flex-column">
+                            <h5 class="label date-label" style="margin-bottom: 5px !important;">Date : </h5>
+                        </div>
+                        
+                    </div>
+                    <div class="mt-3 mb-2"></div>
+                    <div class="row">
+                        <div class="col-xl-12 d-flex flex-column">
+                            <h5 class="label" style="margin-bottom: 5px !important;">Classroom : </h5>
+                        </div>
+                        <div class="col-xl-12 d-flex pl-5">
+                            <div class="row classinfo"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 d-flex flex-column teacherdiv">
+                            <h5 class="label" style="margin-bottom: 5px !important;">Teacher : </h5>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 d-flex flex-column subjectdiv">
+                            <h5 class="label" style="margin-bottom: 5px !important;">Subject : </h5>
+                    
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 d-flex flex-column">
+                            <h5 class="label" style="margin-bottom: 5px !important;">Meeting time : 7h-9h 9h-11h 13h-15h 15h-17h </h5>
+                    
+                        </div>
+                    </div>
+                    <hr class="mt-4 mb-4">
+                    <div class="row">
+                        <button type="submit" class="col-xl-12 btn btn-outline-danger calc">
+                            Calculate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <hr class="mt-4 mb-4">
+        <div class="row schedule-content">
+            <div class="col-xl-12 d-flex justify-content-center">
+                <h3>Schedule</h3>
+            </div>
+            
+        </div>
+        <div class="row shedule-detail">
+
+        </div>
+    </div>
+</body>
+</html>
