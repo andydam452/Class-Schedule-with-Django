@@ -17,9 +17,24 @@
         .thu {
             text-align: center;
         }
+        #spinner{
+            animation-delay: 0.1s;
+
+        }
+        #spinner1{
+            animation-delay: 0.2s;
+        }
+        #spinner2{
+            animation-delay: .3s;
+        }
+        #spinner3{
+            animation-delay: .4s;
+        }
     </style>
     <script>
         $(document).ready(function () {
+            $(".alert").alert('close')
+            $("#loading1").hide()
             $(".addNumber").click(function () {
                 $(".info-gen").text('Generation : '  + $(".gen").val());
                 $(".info-pop").text('Number of population : ' + $(".numPopulation").val());
@@ -85,8 +100,69 @@
                 $(".date-label").text("Date : "+date)
 
             })
+            $(".demoBtn").click(function(){
+                //addNumber
+                $(".info-gen").text('Generation : 1000');
+                $(".info-pop").text('Number of population : 100');
+                $(".info-sub").text('Subject/Teacher in day : 4');
+                $(".info-mutation").text('Mutation : 0.18');
+                //addClass
+                let all_class = ['B206', 'A505', 'C302', 'A409', 'B211'];
+                $(".class-input").val("")
+                let info_class = "Classroom :  "
+                for(let i = 0;i<all_class.length;i++){
+                    var a = "<div type='button' class='btn btn-outline-primary classname col-xl mr-1' style='position: relative;'>"+ all_class[i]+"<span class='badge deleteClass' style='position: absolute;top: -8px;right: -10px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></span></div>"
+                    $('.classinfo').append(a)
+                }                
+                $(".deleteClass").click(function () {
+                    $(this).parent().remove()
+                })
+                //addTeacher
+                let teacher_dict = Teacher = {
+                                    'Long':'PPT',
+                                    'Anh': "Mobile, Web",
+                                    'Nhơn':"AI, GT2, TTH",
+                                    'Sương':"Web, GT1",
+                                    'Dương':'Web',
+                                    'Sang':"Web, GT1",
+                                    'Vượng':"GT1, Web",
+                                    'Thu Hà':'Mobile'
+                                };
+                $.each( teacher_dict, function( key, value ) {
+                    let subject = value;
+                    let teacher = key;
+                    
+                    let a = "<div class='subject-div' style='position: relative;'><span class='teachername' style='font-weight: bold'>" + teacher + "</span><span> : </span><span class='subjectname'>" + subject + "</span><div class='deleteteacher' style='position: absolute;top: -4px;right: -5px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></div></div>"
+                    $(".teacherdiv").append(a);
+                    $(".Subject-input").val("")
+                    $(".teacher-input").val("")
+                    $(".deleteteacher").click(function(){
+                        $(this).parent().remove()
+                    })
+                });
+                //addSub
+                sub_dict = {"GT1":2, 'PPT':1, 'Mobile':3, 'Web':3, 'AI':1, 'GT2':1, 'TTH':2}
+                $.each( sub_dict, function( key, value ) {
+                    let subject = key;
+                    let numsub = value;
+                    
+                    $(".sub-input").val("")
+                    $(".num-sub-input").val("")
+                    let a = "<div style='position: relative;' class='subject-div'><span class='subjectName' style='font-weight: bold'>" + subject + "</span><span> : </span><span class='subjectNum'>" + numsub + "</span><div class='deletesubject' style='position: absolute;top: -4px;right: -5px;'><svg width='2em' height='2em' viewBox='0 0 16 16' class='bi bi-x' fill='currentColor'xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd'd='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z' /></svg></div></div>"
+                    $(".subjectdiv").append(a)
+                    $(".deletesubject").click(function () {
+                        $(this).parent().remove()
+                    });
+                })
+                //addDate
+                let date = "Thu2, Thu3, Thu4, Thu5, Thu6, Thu7";
+                $(".date-input").val("")
+                $(".date-label").text("Date : "+date)
+            })
             $(".form").submit(function(e){
                 e.preventDefault()
+                $("#loading1").show()
+                $("#loading1").addClass("d-flex")
                 let gen = $(".info-gen").text().split(" ")[2]
                 let population = $(".info-pop").text().split(" ")[4]
                 let subPerDay = $(".info-sub").text().split(" ")[4]
@@ -120,6 +196,7 @@
                 sub = JSON.stringify(sub)
 
                 console.log(gen, population, subPerDay, mutation, classname, teachername,sub)
+                
                 $.post("",
                 {
                     'date':date,
@@ -133,11 +210,14 @@
                     'csrfmiddlewaretoken': $('.form input[type=hidden]').val(),
                 },
                 function(data, status){
+                    $("#loading1").hide()
+                    $("#loading1").removeClass("d-flex")
                     let temp1 = data.split("/")
                     for(let i=0;i<temp1.length;i++){
                         temp1[i] = temp1[i].split(",")
                     }
                     $(".shedule-detail").children().remove()
+                    
                     let a = temp1
                     let Phong = new Set(a.map(_ => _[1]))
                     Phong = Object([...Phong])
@@ -146,6 +226,8 @@
                         temp[i] = a.filter(e => e[1] === i)
                     }
                     Phong = temp
+                    console.log("1")
+                    
                     for (classroom in Phong) {
                         let Ca = Phong[classroom]
                         let ca1 = Ca.filter(e => e[2] === "7-9")
@@ -416,6 +498,9 @@
                     </div>
                     <hr class="mt-4 mb-4">
                     <div class="row">
+                        <button class="col-xl-12 btn btn-outline-secondary mb-3 demoBtn">
+                            Demo
+                        </button>
                         <button type="submit" class="col-xl-12 btn btn-outline-danger calc">
                             Calculate
                         </button>
@@ -428,11 +513,32 @@
             <div class="col-xl-12 d-flex justify-content-center">
                 <h3>Schedule</h3>
             </div>
+            <div class="d-flex justify-content-center align-middle col-xl-12 " id="loading1" style="height: 100%;display:none !important">
+                            
+                <div class="spinner-grow spinner-grow-sm mr-1 align-self-center text-primary" id="spinner" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm  mr-1 align-self-center text-primary" id="spinner1" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm  mr-1 align-self-center text-primary" id="spinner2" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <div class="spinner-grow spinner-grow-sm  mr-1 align-self-center text-primary fast" id="spinner3" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
             
         </div>
         <div class="row shedule-detail">
 
         </div>
+    </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Fail to schedule</strong> Please check your data
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
 </body>
 </html>
